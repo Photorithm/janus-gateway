@@ -2605,7 +2605,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				JANUS_STREAMING_ERROR_MISSING_ELEMENT, JANUS_STREAMING_ERROR_INVALID_ELEMENT);
 			if(error_code != 0) {
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 			}
@@ -2628,7 +2628,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 				g_snprintf(error_cause, 512, "Can't add 'rtp' stream, no audio or video have to be streamed...");
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 			}
@@ -2637,7 +2637,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 				g_snprintf(error_cause, 512, "Can't add 'rtp' stream, invalid SRTP suite...");
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 			}
@@ -2651,7 +2651,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 					JANUS_STREAMING_ERROR_MISSING_ELEMENT, JANUS_STREAMING_ERROR_INVALID_ELEMENT);
 				if(error_code != 0) {
 					janus_mutex_lock(&mountpoints_mutex);
-					g_hash_table_remove(mountpoints_temp, &mpid);
+					g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 					janus_mutex_unlock(&mountpoints_mutex);
 					goto prepare_response;
 				}
@@ -2678,7 +2678,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 						error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 						g_snprintf(error_cause, 512, ifas ? "Invalid network interface configuration for audio" : "Unable to query network device information");
 						janus_mutex_lock(&mountpoints_mutex);
-						g_hash_table_remove(mountpoints_temp, &mpid);
+						g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 						janus_mutex_unlock(&mountpoints_mutex);
 						goto prepare_response;
 					}
@@ -2735,7 +2735,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 						error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 						g_snprintf(error_cause, 512, ifas ? "Invalid network interface configuration for video" : "Unable to query network device information");
 						janus_mutex_lock(&mountpoints_mutex);
-						g_hash_table_remove(mountpoints_temp, &mpid);
+						g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 						janus_mutex_unlock(&mountpoints_mutex);
 						goto prepare_response;
 					}
@@ -2755,7 +2755,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 					JANUS_STREAMING_ERROR_MISSING_ELEMENT, JANUS_STREAMING_ERROR_INVALID_ELEMENT);
 				if(error_code != 0) {
 					janus_mutex_lock(&mountpoints_mutex);
-					g_hash_table_remove(mountpoints_temp, &mpid);
+					g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 					janus_mutex_unlock(&mountpoints_mutex);
 					goto prepare_response;
 				}
@@ -2776,7 +2776,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 						error_code = JANUS_STREAMING_ERROR_INVALID_ELEMENT;
 						g_snprintf(error_cause, 512, "Invalid element (datatype can only be text or binary)");
 						janus_mutex_lock(&mountpoints_mutex);
-						g_hash_table_remove(mountpoints_temp, &mpid);
+						g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 						janus_mutex_unlock(&mountpoints_mutex);
 						goto prepare_response;
 					}
@@ -2789,7 +2789,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 						error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 						g_snprintf(error_cause, 512, ifas ? "Invalid network interface configuration for data" : "Unable to query network device information");
 						janus_mutex_lock(&mountpoints_mutex);
-						g_hash_table_remove(mountpoints_temp, &mpid);
+						g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 						janus_mutex_unlock(&mountpoints_mutex);
 						goto prepare_response;
 					}
@@ -2801,7 +2801,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 				g_snprintf(error_cause, 512, "Can't add 'rtp' stream: no datachannels support...");
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 #endif
@@ -2820,7 +2820,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 					rtpcollision ? json_integer_value(rtpcollision) : 0,
 					dodata, &data_iface, dport, textdata, buffermsg);
 			janus_mutex_lock(&mountpoints_mutex);
-			g_hash_table_remove(mountpoints_temp, &mpid);
+			g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 			janus_mutex_unlock(&mountpoints_mutex);
 			if(mp == NULL) {
 				JANUS_LOG(LOG_ERR, "Error creating 'rtp' stream...\n");
@@ -2836,7 +2836,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				JANUS_STREAMING_ERROR_MISSING_ELEMENT, JANUS_STREAMING_ERROR_INVALID_ELEMENT);
 			if(error_code != 0) {
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 			}
@@ -2865,7 +2865,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 				g_snprintf(error_cause, 512, "Can't add 'live' stream, we only support audio file streaming right now...");
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 			}
@@ -2880,7 +2880,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 				g_snprintf(error_cause, 512, "Can't add 'live' stream, unsupported format (we only support raw mu-Law and a-Law files right now)");
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 			}
@@ -2890,7 +2890,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 				g_snprintf(error_cause, 512, "Can't add 'live' stream, no such file '%s'\n", filename);
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 			}
@@ -2902,7 +2902,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 					filename, TRUE,
 					doaudio, acodec, artpmap, afmtp, dovideo);
 			janus_mutex_lock(&mountpoints_mutex);
-			g_hash_table_remove(mountpoints_temp, &mpid);
+			g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 			janus_mutex_unlock(&mountpoints_mutex);
 			if(mp == NULL) {
 				JANUS_LOG(LOG_ERR, "Error creating 'live' stream...\n");
@@ -2918,7 +2918,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				JANUS_STREAMING_ERROR_MISSING_ELEMENT, JANUS_STREAMING_ERROR_INVALID_ELEMENT);
 			if(error_code != 0) {
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 			}
@@ -2947,7 +2947,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 				g_snprintf(error_cause, 512, "Can't add 'ondemand' stream, we only support audio file streaming right now...");
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 			}
@@ -2963,7 +2963,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 				g_snprintf(error_cause, 512, "Can't add 'ondemand' stream, unsupported format (we only support raw mu-Law and a-Law files right now)");
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 			}
@@ -2973,7 +2973,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 				g_snprintf(error_cause, 512, "Can't add 'ondemand' stream, no such file '%s'\n", filename);
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 			}
@@ -2985,7 +2985,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 					filename, FALSE,
 					doaudio, acodec, artpmap, afmtp, dovideo);
 			janus_mutex_lock(&mountpoints_mutex);
-			g_hash_table_remove(mountpoints_temp, &mpid);
+			g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 			janus_mutex_unlock(&mountpoints_mutex);
 			if(mp == NULL) {
 				JANUS_LOG(LOG_ERR, "Error creating 'ondemand' stream...\n");
@@ -3006,7 +3006,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				JANUS_STREAMING_ERROR_MISSING_ELEMENT, JANUS_STREAMING_ERROR_INVALID_ELEMENT);
 			if(error_code != 0) {
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 			}
@@ -3038,7 +3038,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 				error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 				g_snprintf(error_cause, 512, "Can't add 'rtsp' stream, no audio or video have to be streamed...");
 				janus_mutex_lock(&mountpoints_mutex);
-				g_hash_table_remove(mountpoints_temp, &mpid);
+				g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 				janus_mutex_unlock(&mountpoints_mutex);
 				goto prepare_response;
 			} else {
@@ -3049,7 +3049,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 						error_code = JANUS_STREAMING_ERROR_CANT_CREATE;
 						g_snprintf(error_cause, 512, ifas ? "Invalid network interface configuration for stream" : "Unable to query network device information");
 						janus_mutex_lock(&mountpoints_mutex);
-						g_hash_table_remove(mountpoints_temp, &mpid);
+						g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 						janus_mutex_unlock(&mountpoints_mutex);
 						goto prepare_response;
 					}
@@ -3071,7 +3071,7 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 					&multicast_iface,
 					error_on_failure);
 			janus_mutex_lock(&mountpoints_mutex);
-			g_hash_table_remove(mountpoints_temp, &mpid);
+			g_hash_table_remove(mountpoints_temp, string_ids ? (gpointer)mpid_str : (gpointer)&mpid);
 			janus_mutex_unlock(&mountpoints_mutex);
 			if(mp == NULL) {
 				JANUS_LOG(LOG_ERR, "Error creating 'rtsp' stream...\n");
@@ -3597,7 +3597,8 @@ static json_t *janus_streaming_process_synchronous_request(janus_streaming_sessi
 		}
 		JANUS_LOG(LOG_VERB, "Request to unmount mountpoint/stream %s\n", id_value_str);
 		/* Remove mountpoint from the hashtable: this will get it destroyed eventually */
-		g_hash_table_remove(mountpoints, &id_value);
+		g_hash_table_remove(mountpoints,
+			string_ids ? (gpointer)id_value_str : (gpointer)&id_value);
 		/* FIXME Should we kick the current viewers as well? */
 		janus_mutex_lock(&mp->mutex);
 		GList *viewer = g_list_first(mp->viewers);
